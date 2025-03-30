@@ -6,6 +6,9 @@ trait FileUpload {
     private $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     private $maxSize = 2 * 1024 * 1024; // 2MB
 
+    /**
+     * Upload file with validation
+     */
     public function uploadFile(array $file): array 
     {
         try {
@@ -39,7 +42,7 @@ trait FileUpload {
 
             return ['error' => 'Failed to move uploaded file.'];
         } catch (Throwable $e) {
-            error_log($e->getMessage());
+            error_log("File Upload Error: " . $e->getMessage(), 3, '../logs/system.log');
             return ['error' => 'Something went wrong.'];
         }
     }

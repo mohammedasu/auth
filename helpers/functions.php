@@ -1,10 +1,17 @@
 <?php
 declare(strict_types=1);
+
+/**
+ * Sanitize user input
+ */
 function sanitizeInput($input): string 
 {
     return htmlspecialchars(strip_tags(trim($input)), ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Validate username
+ */
 function validateUsername(string $username): string
 {
     if (!preg_match('/^[a-zA-Z0-9_]{3,20}$/', $username)) {
@@ -13,6 +20,9 @@ function validateUsername(string $username): string
     return '';
 }
 
+/**
+ * Validate email
+ */
 function validateEmail(string $email): string
 {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -20,6 +30,10 @@ function validateEmail(string $email): string
     }
     return '';
 }
+
+/**
+ * Validate password security
+ */
 function validatePassword(string $password): string
 {
     if (strlen($password) < 8 || !preg_match('/[A-Z]/', $password) || !preg_match('/[0-9]/', $password)) {

@@ -12,6 +12,7 @@ class Database
         if (self::$instance === null) {
             self::$instance = new mysqli("localhost", "root", "", "auth_db");
             if (self::$instance->connect_error) {
+                error_log("Connection failed: " . self::$instance->connect_error, 3, '../logs/system.log');
                 die("Connection failed: " . self::$instance->connect_error);
             }
         }

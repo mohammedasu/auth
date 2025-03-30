@@ -11,6 +11,18 @@ class Auth {
         $this->db = Database::getInstance();
     }
 
+    /**
+     * Register a new user.
+     *
+     * @param string $username The username.
+     * @param string $email The email address.
+     * @param string $password The password.
+     * @param array|null $profileImage The profile image to upload.
+     *
+     * @return array The result of the registration. The key is either 'success' or 'error'.
+     *
+     * @throws Throwable If there is a database error.
+     */
     public function register(string $username, string $email, string $password, ?array $profileImage): array
     {
         try {
@@ -36,6 +48,7 @@ class Auth {
                 return ['error' => $passwordError];
             }
 
+            // Handle File Upload
             $imagePath = $this->uploadFile($profileImage);
             if (isset($imagePath['error'])) {
                 return ['error' => $imagePath['error']];
@@ -51,10 +64,18 @@ class Auth {
 
             return ['success' => 'User registered successfully.'];
         } catch (Throwable $e) {
-            error_log($e->getMessage());
+            error_log("Registration Error: " . $e->getMessage(), 3, '../logs/system.log');
             return ['error' => 'Something went wrong.'];
         }
     }
+
+    /**
+     * Login user
+     *
+     * @param string $email
+     * @param string $password
+     * @return array
+     */
 
     public function login(string $email, string $password): array 
     {
@@ -73,16 +94,33 @@ class Auth {
             }
             return ['error' => 'Invalid credentials.'];
         } catch (Throwable $e) {
-            error_log($e->getMessage());
+            error_log("Login Error: " . $e->getMessage(), 3, '../logs/system.log');
             return ['error' => 'Something went wrong.'];
         }
     }
+
+    /**
+     * Logout user
+     *
+     * Destroys the user session and redirects the user
+     * back to the login page.
+     *
+     * @return void
+     */
 
     public function logout(): void 
     {
         SessionManager::destroy();
         header('Location: ../views/login.php');
     }
+
+    /**
+     * Check if a user exists in the database
+     *
+     * @param string $email The email address to check
+     *
+     * @return bool True if the user exists, false otherwise
+     */
 
     private function userExists(string $email):bool 
     {
